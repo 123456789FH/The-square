@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>حاسبة مساحة المربع للأطفال</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1:#e8f1ff;
+      --bg2:#f7f2ff;
+      --card:#ffffffcc;
+      --card2:#ffffff;
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --primary:#4f46e5;
+      --primary2:#7c3aed;
+      --good:#16a34a;
+      --bad:#dc2626;
+      --line:#e5e7eb;
+      --shadow: 0 18px 60px rgba(31,41,55,.12);
+      --radius: 22px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:"Tajawal", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 400px at 15% 10%, rgba(79,70,229,.16), transparent 60%),
+        radial-gradient(900px 400px at 90% 25%, rgba(124,58,237,.14), transparent 60%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      min-height:100dvh;
+      padding:20px;
+    }
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+      display:grid;
+      gap:16px;
+    }
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 16px;
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.7);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      backdrop-filter: blur(10px);
+    }
+    .title{
+      display:flex; align-items:center; gap:12px; min-width:0;
+    }
+    .badge{
+      width:44px; height:44px;
+      border-radius:14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      display:grid; place-items:center;
+      box-shadow: 0 14px 30px rgba(79,70,229,.22);
+      flex:none;
+    }
+    .badge svg{ filter: drop-shadow(0 6px 10px rgba(0,0,0,.15)); }
+    h1{
+      margin:0;
+      font-size: clamp(18px, 2.2vw, 26px);
+      line-height:1.2;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .sub{
+      margin:2px 0 0;
+      color:var(--muted);
+      font-size: 13px;
+    }
+    .toolbar{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .pill{
+      display:flex; align-items:center; gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.75);
+      backdrop-filter: blur(8px);
+      font-weight:700;
+      font-size:13px;
+      cursor:pointer;
+      user-select:none;
+      transition:.2s ease;
+    }
+    .pill:hover{ transform: translateY(-1px); }
+    .pill input{ accent-color: var(--primary); }
+    main{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:16px;
+    }
+    @media (max-width: 880px){
+      main{ grid-template-columns: 1fr; }
+    }
+    .card{
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.7);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      overflow:hidden;
+    }
+    .card .head{
+      padding:14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom:1px solid rgba(229,231,235,.85);
+      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.55));
+    }
+    .card .head h2{
+      margin:0;
+      font-size:16px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .card .body{ padding:16px; }
+    .grid{
+      display:grid; gap:12px;
+    }
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 160px;
+      gap:10px;
+      align-items:end;
+    }
+    @media (max-width:520px){
+      .row{ grid-template-columns: 1fr; }
+    }
+    label{
+      display:block;
+      font-weight:800;
+      margin-bottom:6px;
+      font-size:14px;
+    }
+    .hint{ color:var(--muted); font-size:12px; margin-top:6px; }
+    .field{
+      display:flex; gap:10px;
+      padding:10px;
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.8);
+      align-items:center;
+    }
+    input[type="number"]{
+      width:100%;
+      border:none;
+      outline:none;
+      background:transparent;
+      font-size:18px;
+      font-weight:800;
+      padding:6px 4px;
+    }
+    select{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.9);
+      border-radius: 14px;
+      padding:10px 10px;
+      font-weight:800;
+      outline:none;
+      cursor:pointer;
+    }
+    input[type="range"]{
+      width:100%;
+      accent-color: var(--primary);
+    }
+    .quick{
+      display:flex; flex-wrap:wrap; gap:8px;
+    }
+    .chip{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.85);
+      padding:8px 10px;
+      border-radius: 999px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.15s ease;
+      font-size:13px;
+    }
+    .chip:hover{ transform: translateY(-1px); border-color: rgba(79,70,229,.35); }
+    .result{
+      padding:14px 14px;
+      border-radius: 18px;
+      border:1px dashed rgba(79,70,229,.35);
+      background: linear-gradient(135deg, rgba(79,70,229,.10), rgba(124,58,237,.08));
+      display:grid;
+      gap:10px;
+    }
+    .big{
+      font-size: clamp(22px, 2.6vw, 32px);
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+    .formula{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+      color:var(--muted);
+      font-weight:700;
+      font-size:14px;
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      background: rgba(255,255,255,.65);
+      border:1px solid rgba(229,231,235,.9);
+      padding:6px 10px;
+      border-radius: 999px;
+      color: #111827;
+      font-weight:900;
+    }
+    .steps{
+      background: rgba(255,255,255,.75);
+      border:1px solid rgba(229,231,235,.9);
+      border-radius: 18px;
+      padding:12px 12px;
+      display:grid;
+      gap:8px;
+    }
+    .step{
+      display:flex; align-items:flex-start; gap:10px;
+      font-weight:700;
+      color:#374151;
+      line-height:1.45;
+      font-size:13px;
+    }
+    .dot{
+      width:22px; height:22px; border-radius:8px;
+      display:grid; place-items:center;
+      background: rgba(79,70,229,.12);
+      color: var(--primary);
+      font-weight:900;
+      flex:none;
+    }
+    /* Visual */
+    .visual{
+      display:grid;
+      gap:12px;
+      justify-items:center;
+    }
+    .canvasBox{
+      width:min(360px, 100%);
+      aspect-ratio: 1/1;
+      border-radius: 22px;
+      background: rgba(255,255,255,.75);
+      border:1px solid rgba(229,231,235,.9);
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      position:relative;
+    }
+    .legend{
+      width:100%;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      color:var(--muted);
+      font-weight:800;
+      font-size:13px;
+    }
+    .mini{
+      padding:12px;
+      border-radius: 18px;
+      border:1px solid rgba(229,231,235,.9);
+      background: rgba(255,255,255,.75);
+      width:100%;
+    }
+    .btnRow{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .btn{
+      border:none;
+      outline:none;
+      cursor:pointer;
+      padding:10px 12px;
+      border-radius: 16px;
+      font-weight:900;
+      transition:.15s ease;
+      display:flex; align-items:center; gap:8px;
+    }
+    .btn.primary{
+      color:#fff;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      box-shadow: 0 14px 30px rgba(79,70,229,.20);
+    }
+    .btn.ghost{
+      background: rgba(255,255,255,.8);
+      border:1px solid var(--line);
+      color:#111827;
+    }
+    .btn:hover{ transform: translateY(-1px); }
+    .msg{
+      margin-top:10px;
+      font-weight:900;
+      padding:10px 12px;
+      border-radius: 16px;
+      display:none;
+    }
+    .msg.good{ display:block; background: rgba(22,163,74,.10); color: var(--good); border:1px solid rgba(22,163,74,.25); }
+    .msg.bad{ display:block; background: rgba(220,38,38,.10); color: var(--bad); border:1px solid rgba(220,38,38,.25); }
+
+    footer{
+      text-align:center;
+      color:var(--muted);
+      font-weight:700;
+      font-size:12px;
+      padding:8px 0 0;
+    }
+
+    @media print{
+      body{ background:#fff; padding:0; }
+      header, .toolbar, .btnRow, .hint, .quick, .pill{ display:none !important; }
+      .card{ box-shadow:none; border:1px solid #ddd; background:#fff; }
+      .card .head{ background:#fff; }
+      footer{ display:block; margin-top:8px; }
+    }
+
+    /* Dark mode (اختياري) */
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg1:#0b1020;
+        --bg2:#120b1e;
+        --card:#0b1220cc;
+        --ink:#e5e7eb;
+        --muted:#9ca3af;
+        --line:#243044;
+        --shadow: 0 22px 70px rgba(0,0,0,.35);
+      }
+      body{
+        background:
+          radial-gradient(900px 400px at 15% 10%, rgba(79,70,229,.20), transparent 60%),
+          radial-gradient(900px 400px at 90% 25%, rgba(124,58,237,.18), transparent 60%),
+          linear-gradient(135deg, var(--bg1), var(--bg2));
+      }
+      .field, .mini, .canvasBox, .steps, .mono, .pill, .chip, select{
+        background: rgba(15,23,42,.65);
+        border-color: rgba(148,163,184,.18);
+      }
+      .card .head{
+        border-bottom-color: rgba(148,163,184,.16);
+        background: linear-gradient(180deg, rgba(15,23,42,.75), rgba(15,23,42,.45));
+      }
+      .mono{ color: #e5e7eb; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="badge" aria-hidden="true">
+          <!-- square icon -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="4" width="16" height="16" rx="4" fill="white" opacity=".92"/>
+            <path d="M8 8h8v8H8z" stroke="#4F46E5" stroke-width="2.2"/>
+          </svg>
+        </div>
+        <div style="min-width:0">
+          <h1>حاسبة مساحة المربع للأطفال</h1>
+          <div class="sub">أدخل طول الضلع، وشاهد المساحة مع رسم وشرح بسيط ✨</div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <label class="pill" title="تبديل الأرقام العربية/الإنجليزية">
+          <input id="digitsToggle" type="checkbox" checked />
+          <span>أرقام عربية (٠١٢٣)</span>
+        </label>
+        <button class="pill" id="printBtn" type="button" title="طباعة">
+          🖨️ <span>طباعة</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Calculator -->
+      <section class="card" aria-label="الحاسبة">
+        <div class="head">
+          <h2>🧮 الحاسبة</h2>
+          <div class="mono" id="unitBadge">سم</div>
+        </div>
+
+        <div class="body">
+          <div class="grid">
+            <div class="row">
+              <div>
+                <label for="side">طول ضلع المربع</label>
+                <div class="field">
+                  <input id="side" type="number" inputmode="numeric" min="0" step="1" value="4" aria-label="أدخل طول الضلع" />
+                </div>
+                <div class="hint">استخدم رقمًا موجبًا (مثال: ٤ سم).</div>
+              </div>
+
+              <div>
+                <label for="unit">الوحدة</label>
+                <select id="unit" aria-label="اختر الوحدة">
+                  <option value="سم" selected>سم</option>
+                  <option value="م">م</option>
+                  <option value="مم">مم</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label for="sideRange">شريط التحكّم</label>
+              <input id="sideRange" type="range" min="0" max="20" step="1" value="4" aria-label="شريط التحكّم لطول الضلع" />
+              <div class="legend">
+                <span>٠</span><span>٢٠</span>
+              </div>
+            </div>
+
+            <div class="quick" aria-label="قيم سريعة">
+              <button class="chip" data-v="2" type="button">٢</button>
+              <button class="chip" data-v="3" type="button">٣</button>
+              <button class="chip" data-v="4" type="button">٤</button>
+              <button class="chip" data-v="5" type="button">٥</button>
+              <button class="chip" data-v="8" type="button">٨</button>
+              <button class="chip" data-v="10" type="button">١٠</button>
+            </div>
+
+            <div class="result" aria-live="polite">
+              <div class="big" id="areaText">المساحة = ١٦ سم²</div>
+              <div class="formula">
+                <span>القانون:</span>
+                <span class="mono">المساحة = الضلع × الضلع</span>
+              </div>
+
+              <div class="steps" aria-label="خطوات الحل">
+                <div class="step"><span class="dot">١</span><span>اكتب طول الضلع: <b id="s1">٤ سم</b></span></div>
+                <div class="step"><span class="dot">٢</span><span>اضرب الضلع في نفسه: <b id="s2">٤ × ٤</b></span></div>
+                <div class="step"><span class="dot">٣</span><span>الناتج هو المساحة: <b id="s3">١٦ سم²</b></span></div>
+              </div>
+            </div>
+
+            <div class="mini">
+              <div style="font-weight:900; margin-bottom:8px;">💡 تذكير صغير</div>
+              <div style="color:var(--muted); font-weight:700; line-height:1.6;">
+                مساحة المربع تعني عدد المربعات الصغيرة التي تغطي الشكل بالكامل.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Visual + Challenge -->
+      <aside class="card" aria-label="الرسم والتحدي">
+        <div class="head">
+          <h2>🟪 رسم توضيحي</h2>
+          <button class="btn ghost" id="newChallengeBtn" type="button" title="تحدّي جديد">🎯 تحدّي</button>
+        </div>
+
+        <div class="body">
+          <div class="visual">
+            <div class="canvasBox" aria-label="رسم مربع">
+              <svg id="sqSvg" viewBox="0 0 320 320" width="100%" height="100%" role="img" aria-label="مربع مع قياسات">
+                <!-- grid -->
+                <defs>
+                  <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(79,70,229,.18)" stroke-width="1"/>
+                  </pattern>
+                  <linearGradient id="fillGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="rgba(79,70,229,.22)"/>
+                    <stop offset="1" stop-color="rgba(124,58,237,.18)"/>
+                  </linearGradient>
+                </defs>
+                <rect x="0" y="0" width="320" height="320" fill="url(#grid)" opacity="0.7"></rect>
+
+                <!-- square (updated by JS) -->
+                <rect id="sq" x="70" y="70" width="180" height="180" rx="18" fill="url(#fillGrad)" stroke="rgba(79,70,229,.65)" stroke-width="4"></rect>
+
+                <!-- side label -->
+                <line id="sideLine" x1="70" y1="260" x2="250" y2="260" stroke="rgba(31,41,55,.55)" stroke-width="3" stroke-linecap="round"/>
+                <text id="sideLabel" x="160" y="292" text-anchor="middle" font-family="Tajawal, Arial" font-size="18" font-weight="800" fill="rgba(31,41,55,.75)">
+                  الضلع = ٤ سم
+                </text>
+              </svg>
+            </div>
+
+            <div class="mini" style="text-align:center">
+              <div style="font-weight:900; margin-bottom:6px;">🎯 تحدّي سريع</div>
+              <div style="color:var(--muted); font-weight:700; line-height:1.6;" id="challengeText">
+                إذا كان الضلع = ٦ سم، كم المساحة؟
+              </div>
+
+              <div class="field" style="margin-top:10px;">
+                <input id="challengeAnswer" type="number" inputmode="numeric" min="0" step="1" placeholder="اكتب إجابتك هنا" aria-label="إجابة التحدي" />
+              </div>
+
+              <div class="btnRow" style="justify-content:center; margin-top:10px;">
+                <button class="btn primary" id="checkBtn" type="button">✅ تحقّق</button>
+                <button class="btn ghost" id="showBtn" type="button">👀 أظهر الإجابة</button>
+              </div>
+
+              <div id="msgGood" class="msg good">أحسنت! إجابتك صحيحة 👏</div>
+              <div id="msgBad" class="msg bad">جرّب مرة ثانية 😊</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      إعداد: أ/ فاطمة هزازي — الملتقى التفاعلي
+    </footer>
+  </div>
+
+<script>
+  // عناصر
+  const sideEl = document.getElementById('side');
+  const rangeEl = document.getElementById('sideRange');
+  const unitEl = document.getElementById('unit');
+  const digitsToggle = document.getElementById('digitsToggle');
+  const areaText = document.getElementById('areaText');
+  const s1 = document.getElementById('s1');
+  const s2 = document.getElementById('s2');
+  const s3 = document.getElementById('s3');
+  const unitBadge = document.getElementById('unitBadge');
+
+  const sq = document.getElementById('sq');
+  const sideLabel = document.getElementById('sideLabel');
+  const sideLine = document.getElementById('sideLine');
+
+  const printBtn = document.getElementById('printBtn');
+
+  const chips = Array.from(document.querySelectorAll('.chip'));
+
+  // تحدّي
+  const newChallengeBtn = document.getElementById('newChallengeBtn');
+  const challengeText = document.getElementById('challengeText');
+  const challengeAnswer = document.getElementById('challengeAnswer');
+  const checkBtn = document.getElementById('checkBtn');
+  const showBtn = document.getElementById('showBtn');
+  const msgGood = document.getElementById('msgGood');
+  const msgBad = document.getElementById('msgBad');
+
+  // أرقام عربية
+  const arabicDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+  function toArabic(str){
+    return String(str).replace(/\d/g, d => arabicDigits[Number(d)]);
+  }
+  function fmtNumber(n){
+    // نجرب Intl أولاً
+    try{
+      if (digitsToggle.checked){
+        return new Intl.NumberFormat('ar-SA', { maximumFractionDigits: 0 }).format(n);
+      }
+      return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(n);
+    }catch(e){
+      const s = String(n);
+      return digitsToggle.checked ? toArabic(s) : s;
+    }
+  }
+  function unit2(u){ return u + "²"; }
+
+  function clamp(n, min, max){
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function readSide(){
+    let v = Number(sideEl.value);
+    if (!Number.isFinite(v)) v = 0;
+    v = Math.max(0, Math.round(v)); // مناسب للأطفال (أعداد صحيحة)
+    return v;
+  }
+
+  function updateVisual(side){
+    // خريطة: side من 0..20 إلى حجم 0..220 تقريباً
+    const minSize = 40;
+    const maxSize = 220;
+    const size = side === 0 ? minSize : (minSize + (maxSize - minSize) * (side / 20));
+    const w = clamp(size, minSize, maxSize);
+
+    const x = (320 - w) / 2;
+    const y = (320 - w) / 2;
+
+    sq.setAttribute('x', x);
+    sq.setAttribute('y', y);
+    sq.setAttribute('width', w);
+    sq.setAttribute('height', w);
+
+    // خط أسفل المربع
+    const lineY = y + w + 18;
+    const lx1 = x, lx2 = x + w;
+    sideLine.setAttribute('x1', lx1);
+    sideLine.setAttribute('y1', lineY);
+    sideLine.setAttribute('x2', lx2);
+    sideLine.setAttribute('y2', lineY);
+
+    // نص القياس
+    const u = unitEl.value;
+    sideLabel.setAttribute('x', 160);
+    sideLabel.setAttribute('y', clamp(lineY + 26, 28, 312));
+    sideLabel.textContent = `الضلع = ${fmtNumber(side)} ${u}`;
+  }
+
+  function render(){
+    const side = readSide();
+    const u = unitEl.value;
+    unitBadge.textContent = u;
+
+    // مزامنة
+    sideEl.value = side;
+    rangeEl.value = clamp(side, Number(rangeEl.min), Number(rangeEl.max));
+
+    const area = side * side;
+
+    const sideTxt = `${fmtNumber(side)} ${u}`;
+    const areaTxt = `${fmtNumber(area)} ${unit2(u)}`;
+
+    areaText.textContent = `المساحة = ${areaTxt}`;
+    s1.textContent = sideTxt;
+    s2.textContent = `${fmtNumber(side)} × ${fmtNumber(side)}`;
+    s3.textContent = areaTxt;
+
+    updateVisual(side);
+    hideMsgs();
+  }
+
+  function hideMsgs(){
+    msgGood.className = "msg good";
+    msgBad.className = "msg bad";
+    msgGood.style.display = "none";
+    msgBad.style.display = "none";
+  }
+
+  // أحداث
+  sideEl.addEventListener('input', render);
+  rangeEl.addEventListener('input', () => { sideEl.value = rangeEl.value; render(); });
+  unitEl.addEventListener('change', render);
+  digitsToggle.addEventListener('change', render);
+
+  chips.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      sideEl.value = btn.dataset.v;
+      render();
+    });
+  });
+
+  printBtn.addEventListener('click', ()=> window.print());
+
+  // تحدّي
+  let challengeSide = 6;
+  function newChallenge(){
+    // يولّد عدد 2..12
+    challengeSide = Math.floor(Math.random()*11) + 2;
+    const u = unitEl.value;
+    challengeText.textContent = `إذا كان الضلع = ${fmtNumber(challengeSide)} ${u}، كم المساحة؟`;
+    challengeAnswer.value = "";
+    hideMsgs();
+  }
+  function checkChallenge(){
+    const ans = Math.round(Number(challengeAnswer.value || 0));
+    const correct = challengeSide * challengeSide;
+
+    hideMsgs();
+    if (ans === correct){
+      msgGood.style.display = "block";
+    }else{
+      msgBad.style.display = "block";
+    }
+  }
+  function showChallenge(){
+    const u = unitEl.value;
+    const correct = challengeSide * challengeSide;
+    hideMsgs();
+    msgGood.style.display = "block";
+    msgGood.textContent = `الإجابة: ${fmtNumber(correct)} ${unit2(u)} ✅`;
+  }
+
+  newChallengeBtn.addEventListener('click', newChallenge);
+  checkBtn.addEventListener('click', checkChallenge);
+  showBtn.addEventListener('click', showChallenge);
+
+  // بدء
+  render();
+  newChallenge();
+</script>
+</body>
+</html>
